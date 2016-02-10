@@ -9,6 +9,7 @@
 
     <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css" media="screen" title="no title" charset="utf-8">
   </head>
   <body>
     <div class="container">
@@ -18,9 +19,23 @@
         <div class="col-md-6">
           <h2>Hot Ticket Movies</h2>
           <p id="no-movies">No Movies Available! Try Fandango...</p>
-          <ul id="movies">
-
-          </ul>
+          <form id="buy-ticket">
+            <p>
+              Pick a showtime to generate your ticket:
+            </p>
+            <div class="checkbox">
+              <label>
+                <input class="new-showtime" type="checkbox" id="patron-age" value="55">
+                I am 55+
+              </label>
+            </div>
+            <ul id="movies">
+            </ul>
+            <input hidden id="selected-time" value="">
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Continue Purchase</button>
+            </div>
+          </form>
         </div>
         <div class="col-md-6">
           <h2>Add a Movie</h2>
@@ -33,22 +48,26 @@
               <label for="new-release-date">Release Date</label>
               <input id="new-release-date" type="date" class="form-control">
             </div>
-            <div class="form-group">
-              <button type="submit" class="btn btn-success">Add</button>
+            <div class="form-group" id="showtime-checkboxes">
+              <div class="row">
+                <div class="col-sm-12">
+                  <label>Showtimes:</label>
+                </div>
+              </div>
+
+                <!-- Checkboxes should show up here! -->
+
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <button type="submit" class="btn btn-success">Add</button>
+                </div>
+              </div>
             </div>
           </form>
         </div>
       </div>
-
-      <div class="row collapse" id="ticket">
-        <div class="col-md-6">
-
-        </div>
-        <div class="col-md-6">
-
-        </div>
-      </div>
-    </div>
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

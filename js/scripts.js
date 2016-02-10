@@ -15,6 +15,19 @@ Movie.prototype.isNewRelease = function (showtime) {
   return daysAvailable < 8;
 };
 
+Movie.prototype.showtimeList = function () {
+  var showtimeList = [];
+  this.showtimes.forEach(function(time) {
+    showtimeList.push(
+      '<button type="button" class="btn btn-link showtime-selection" value="' +
+        time.toISOString() + '">' +
+        time.toLocaleTimeString() +
+      '</button>'
+    );
+  });
+  return showtimeList;
+};
+
 function Ticket(movie, showtime) {
   this.movie = movie;
   this.showtime = showtime;
@@ -46,6 +59,42 @@ Ticket.prototype.getPrice = function (patronAge) {
   return defaultPrice + newReleaseModifier + matineeModifier + patronAgeModifier;
 };
 
+var showtimeArray = function(firstShow, lastShow, increment) {
+  var firstMinutes = timeStringToMinutes(firstShow);
+  var lastMinutes = timeStringToMinutes(lastShow);
+
+  var showtimes = [];
+  for (var i = firstMinutes; i < lastMinutes + increment; i += increment) {
+    showtimes.push(i);
+  }
+  return showtimes;
+};
+
+var timeStringToMinutes = function(timeString) {
+  var hoursMinutes = timeString.split(':');
+  return parseInt(hoursMinutes[0]) * 60 + parseInt(hoursMinutes[1]);
+};
+
+var showtimeCheckboxes = function(firstShow, lastShow, increment) {
+  var showtimes = showtimeArray(firstShow, lastShow, increment);
+  var showtimeCheckboxes = [];
+  showtimes.forEach(function(showtime) {
+    showtimeCheckboxes.push(createShowtimeCheckbox(showtime));
+  });
+  return showtimeCheckboxes.join('');
+};
+
+var createShowtimeCheckbox = function(showtime) {
+  var time = new Date(2000, 01, 01, 0, showtime);
+
+  return '<div class="checkbox col-sm-3">' +
+    '<label>' +
+      '<input class="new-showtime" type="checkbox" value="' + time.toString() + '">' +
+      time.toLocaleTimeString() +
+    '</label>' +
+  '</div>'
+};
+
 Number.prototype.toDollarString = function () {
   var priceFixed = this.toFixed(2);
   return "$" + priceFixed.toString();
@@ -57,6 +106,9 @@ Date.prototype.isMatinee = function() {
 };
 
 $(document).ready(function() {
+  $("div#showtime-checkboxes").append(showtimeCheckboxes('00:00', '00:30', 20));
+  $("div#showtime-checkboxes").append(showtimeCheckboxes('11:30', '23:30', 20));
+
   $("form#new-movie").submit(function(event) {
     event.preventDefault();
 
@@ -64,7 +116,35 @@ $(document).ready(function() {
     var newReleaseDate = $("input#new-release-date").val();
     var newMovie = new Movie(newTitle, newReleaseDate);
 
-    $("ul#movies").append("<li>" + newMovie.name + "</li>");
+    $('.new-showtime:checked').each(function() {
+      var newShowtime = $(this).val();
+      var newTime = new Date(newShowtime);
+      newMovie.showtimes.push(newTime);
+    });
+
+    $('#no-movies').hide();
+    $("ul#movies").append(
+      "<li>" + newMovie.name + newMovie.showtimeList() + "</li>"
+    );
+
+    $("input#new-title").val("");
+    $("input#new-release-date").val("");
+
+    $(".showtime-selection").click(function() {
+      $("ul#movies").append('<p>PICKLE</p>')
+      var showtime = $("button.showtime-selection").val()
+      $("#selected-time").val(showtime);
+    });
+  });
+
+  $('form#buy-ticket').submit(function(event) {
+    event.preventDefault();
+
+    var patronAge = $("input#patron-age:checked").val() || 0;
+    var showtime = $("#selected-time").val();
+    
+    console.log(patronAge);
+    console.log(showtime);
   });
 
 });

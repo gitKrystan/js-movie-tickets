@@ -53,6 +53,12 @@ describe('Number', function() {
   });
 });
 
+describe('showtimeArray', function() {
+  it('returns a series of showtimes at the specified increment', function() {
+    expect(showtimeArray('00:15', '1:00', 15)).to.eql([15, 30, 45, 60]);
+  });
+});
+
 var createTestMovie = function() {
   return new Movie('Revenge of the Nerds', '2016-03-09');
 };
